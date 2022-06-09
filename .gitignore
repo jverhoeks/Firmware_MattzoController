@@ -1,0 +1,4 @@
+.DS_Store
+*.o
+.pio/
+network_config.json
