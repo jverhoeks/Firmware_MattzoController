@@ -1,0 +1,20 @@
+{
+	"locos": [
+		{
+			"address": 1,
+			"name": "Train1",
+			"bleHubs": [
+				{
+					"type": "PU",
+					"address": "xx:xx:xx:xx:xx:xx",
+					"channels": [
+						{
+							"channel": "A",
+							"attachedDevice": "motor"
+						}
+					]
+				}
+			]
+		}
+	]
+}
