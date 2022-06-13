@@ -6,11 +6,13 @@
 // The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+#include  <cstdlib>
+
 #define MATTZO_CONTROLLER_TYPE "MattzoLayoutController"
 #include <ESP8266WiFi.h>                          // WiFi library for ESP-8266
 #include <Servo.h>                                // Servo library
 #include "MattzoLayoutController_Configuration.h" // this file should be placed in the same folder
-#include "MattzoController_Library.h"             // this file needs to be placed in the Arduino library folder
+#include "MattzoController_Library.h"         // this file needs to be placed in the Arduino library folder
 
 #if USE_PCA9685
 #include <Wire.h>                                 // Built-in library for I2C
@@ -27,6 +29,8 @@ Adafruit_MCP23017 mcp23017[NUM_MCP23017s];
 // The complete list is available here: https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
 U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE); // in arduino ide pleas look at "File" - "Examples" - "U8g2" in the menu for examples
 #endif
+
+
 
                                                                              
 // SERVO VARIABLES AND CONSTANTS
@@ -241,6 +245,7 @@ void setup() {
   // load config from EEPROM, initialize Wifi, MQTT etc.
   setupMattzoController();
 }
+
 
 #if USE_PCA9685
 void setupPCA9685() {
@@ -865,7 +870,7 @@ void levelCrossingCommand(int levelCrossingCommand) {
         levelCrossing.levelCrossingStatus = LevelCrossingStatus::OPEN;
         levelCrossing.servoTargetAnglePrimaryBooms = levelCrossingConfiguration.bbAnglePrimaryUp;
         levelCrossing.servoTargetAngleSecondaryBooms = levelCrossingConfiguration.bbAngleSecondaryUp;
-        levelCrossing.servoAngleIncrementPerSec = abs(levelCrossingConfiguration.bbAnglePrimaryUp - levelCrossingConfiguration.bbAnglePrimaryDown) * 1000 / levelCrossingConfiguration.bbOpeningPeriod_ms;
+        levelCrossing.servoAngleIncrementPerSec = abs(int(levelCrossingConfiguration.bbAnglePrimaryUp - levelCrossingConfiguration.bbAnglePrimaryDown)) * 1000 / levelCrossingConfiguration.bbOpeningPeriod_ms;
         mcLog2("Level crossing command OPEN, servo increment " + String(levelCrossing.servoAngleIncrementPerSec) + " deg/s.", LOG_INFO);
         levelCrossing.lastStatusChangeTime_ms = millis();
         levelCrossing.boomBarrierActionInProgress = true;
@@ -878,7 +883,7 @@ void levelCrossingCommand(int levelCrossingCommand) {
       levelCrossing.levelCrossingStatus = LevelCrossingStatus::CLOSED;
       levelCrossing.servoTargetAnglePrimaryBooms = levelCrossingConfiguration.bbAnglePrimaryDown;
       levelCrossing.servoTargetAngleSecondaryBooms = levelCrossingConfiguration.bbAngleSecondaryDown;
-      levelCrossing.servoAngleIncrementPerSec = abs(levelCrossingConfiguration.bbAnglePrimaryUp - levelCrossingConfiguration.bbAnglePrimaryDown) * 1000 / levelCrossingConfiguration.bbClosingPeriod_ms;
+      levelCrossing.servoAngleIncrementPerSec = abs(int(levelCrossingConfiguration.bbAnglePrimaryUp - levelCrossingConfiguration.bbAnglePrimaryDown)) * 1000 / levelCrossingConfiguration.bbClosingPeriod_ms;
       mcLog2("Level crossing command CLOSED, servo increment " + String(levelCrossing.servoAngleIncrementPerSec) + " deg/s.", LOG_INFO);
       levelCrossing.lastStatusChangeTime_ms = millis();
       levelCrossing.closeBoomsImmediately = levelCrossing.boomBarrierActionInProgress;  // close booms immediately if booms were not fully open yet.
@@ -963,7 +968,7 @@ void levelCrossingLightLoop() {
       // fading lights
       int brightness = 0;
       if (lightsActive) {
-        brightness = map(abs(levelCrossingConfiguration.ledFlashingPeriod_ms / 2 - ((now_ms + levelCrossingConfiguration.ledFlashingPeriod_ms * s / 2) % levelCrossingConfiguration.ledFlashingPeriod_ms)), 0, levelCrossingConfiguration.ledFlashingPeriod_ms / 2, -768, 1280);
+        brightness = map(abs(int(levelCrossingConfiguration.ledFlashingPeriod_ms / 2 - ((now_ms + levelCrossingConfiguration.ledFlashingPeriod_ms * s / 2) % levelCrossingConfiguration.ledFlashingPeriod_ms))), 0, levelCrossingConfiguration.ledFlashingPeriod_ms / 2, -768, 1280);
       }
       fadeLED(levelCrossingConfiguration.ledIndex[s], brightness);
     } else {
@@ -1294,6 +1299,7 @@ bool resetBridgeLeafErrors() {
       bridge.bridgeLeaf[l].leafStatus = BridgeLeafStatus::UNDEFINED;
     }
   }
+  return true;
 }
 
 // Check if all bridge leafs are in opened state
@@ -1321,6 +1327,7 @@ bool processBridgeLeafs() {
   for (int l = 0; l < NUM_BASCULE_BRIDGE_LEAFS; l++) {
     processBridgeLeaf(l);
   }
+  return true;
 }
 
 // Process bridge leaf state machines
@@ -1556,6 +1563,7 @@ bool processBridgeLeaf(int leafIndex) {
         mcLog2("[" + String(leafIndex) + "] Unknown status change...?!? Bridge leaf status undefined.", LOG_CRIT);
     }
   }
+  return true;
 }
 
 

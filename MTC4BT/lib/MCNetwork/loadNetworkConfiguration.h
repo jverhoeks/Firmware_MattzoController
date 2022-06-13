@@ -115,6 +115,7 @@ MCNetworkConfiguration *loadNetworkConfiguration(const char *configFilePath)
     mqtt->ServerPort = mqttConfig["port"] | 1883;
     mqtt->KeepAlive = mqttConfig["keepalive"] | 10;
     mqtt->Ping = mqttConfig["ping"] | 0;
+    mqtt->Anonymous = mqttConfig["anonymous"] | 1;
     mqtt->Topic = "rocrail/service/command";
     mqtt->Username = mqttConfig["username"].as<std::string>();
     mqtt->Password = mqttConfig["password"].as<std::string>();

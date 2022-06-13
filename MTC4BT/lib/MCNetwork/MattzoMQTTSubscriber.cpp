@@ -110,20 +110,37 @@ void MattzoMQTTSubscriber::reconnect()
     lastWillMessage.toCharArray(lastWillMessage_char, lastWillMessage.length() + 1);
 
     log4MC::info("MQTT: Subscriber attempting to connect...");
-     log4MC::vlogf(LOG_INFO, "MQTT: Subscriber %s %s - %s",_subscriberName,_config->Username.c_str(),_config->Password.c_str());
+    if(_config->Anonymous == 0) {
+      log4MC::vlogf(LOG_INFO, "MQTT: Subscriber %s %s - %s",_subscriberName,_config->Username.c_str(),_config->Password.c_str());
+      if (mqttSubscriberClient.connect(_subscriberName,_config->Username.c_str(),_config->Password.c_str(),_config->Topic, 0, false, lastWillMessage_char))
+      {
+        log4MC::info("MQTT: Subscriber connected");
+        mqttSubscriberClient.subscribe(_config->Topic);
+        log4MC::vlogf(LOG_INFO, "MQTT: Subscriber subscribed to topic '%s'", _config->Topic);
+      }
+      else
+      {
+        log4MC::vlogf(LOG_WARNING, "MQTT: Subscriber connect failed, rc=%u. Try again in a few seconds...", mqttSubscriberClient.state());
 
-    if (mqttSubscriberClient.connect(_subscriberName,_config->Username.c_str(),_config->Password.c_str(),_config->Topic, 0, false, lastWillMessage_char))
-    {
-      log4MC::info("MQTT: Subscriber connected");
-      mqttSubscriberClient.subscribe(_config->Topic);
-      log4MC::vlogf(LOG_INFO, "MQTT: Subscriber subscribed to topic '%s'", _config->Topic);
+        // Wait a litte while before retrying.
+        vTaskDelay(ReconnectDelayInMilliseconds / portTICK_PERIOD_MS);
+      }
     }
-    else
-    {
-      log4MC::vlogf(LOG_WARNING, "MQTT: Subscriber connect failed, rc=%u. Try again in a few seconds...", mqttSubscriberClient.state());
+    else {
+      log4MC::vlogf(LOG_INFO, "MQTT: Subscriber %s anonymous",_subscriberName);
+      if (mqttSubscriberClient.connect(_subscriberName,_config->Topic, 0, false, lastWillMessage_char))
+      {
+        log4MC::info("MQTT: Subscriber connected");
+        mqttSubscriberClient.subscribe(_config->Topic);
+        log4MC::vlogf(LOG_INFO, "MQTT: Subscriber subscribed to topic '%s'", _config->Topic);
+      }
+      else
+      {
+        log4MC::vlogf(LOG_WARNING, "MQTT: Subscriber connect failed, rc=%u. Try again in a few seconds...", mqttSubscriberClient.state());
 
-      // Wait a litte while before retrying.
-      vTaskDelay(ReconnectDelayInMilliseconds / portTICK_PERIOD_MS);
+        // Wait a litte while before retrying.
+        vTaskDelay(ReconnectDelayInMilliseconds / portTICK_PERIOD_MS);
+      }   
     }
   }
 }

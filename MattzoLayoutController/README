@@ -1,0 +1,19 @@
+
+
+# Config 
+
+Edit -> `MattzoController_Network_Configuration.h`
+
+```
+const char* WIFI_SSID = "xxxxx";
+const char* WIFI_PASSWORD = "xxxxx";
+const char* MQTT_BROKER_IP = "192.168.1.179";
+const int MQTT_BROKER_PORT = 1883;
+```
+
+# Run
+
+```
+pio run -t upload
+```
+

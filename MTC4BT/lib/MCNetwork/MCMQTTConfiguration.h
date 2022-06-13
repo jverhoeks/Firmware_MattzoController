@@ -8,6 +8,7 @@ public:
     uint16_t ServerPort;
     uint16_t KeepAlive;
     uint16_t Ping;
+    uint16_t Anonymous;
     const char *Topic;
     std::string Username;
     std::string Password;
