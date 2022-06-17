@@ -87,7 +87,7 @@ uint8_t PCA9685_OE_PIN = D0;
 // MCP23017 WIRING CONFIGURATION
 
 // MCP23017 port expander used?
-#define USE_MCP23017 true
+#define USE_MCP23017 false
 
 // Number of chained MCP23017 port extenders
 #define NUM_MCP23017s 2
@@ -95,8 +95,8 @@ uint8_t PCA9685_OE_PIN = D0;
 
 // SERVO WIRING CONFIGURATION
 
-// Number of servos
-const int NUM_SERVOS = 16;
+// Number of servos // 16
+const int NUM_SERVOS = 8;
 
 struct ServoConfiguration {
   // Digital output pins for switch servos (pins like D0, D1 etc. for ESP-8266 I/O pins, numbers like 0, 1 etc. for pins of the PCA9685)

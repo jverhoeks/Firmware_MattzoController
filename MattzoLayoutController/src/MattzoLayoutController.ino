@@ -205,6 +205,7 @@ void setup() {
   int m;
 
   // initialize LED pins
+  Serial.printf("Setting up LEDS %i",NUM_LEDS);
   for (int i = 0; i < NUM_LEDS; i++) {
     if (ledConfiguration[i].pinType == 0) {
       // LED connected directly to the controller
@@ -224,6 +225,7 @@ void setup() {
   }
 
   // initialize sensor pins
+  Serial.printf("Setting up SENSORS %i",NUM_SENSORS);
   for (int i = 0; i < NUM_SENSORS; i++) {
     if (sensorConfiguration[i].pinType == LOCAL_SENSOR_PIN_TYPE) {
       // sensor connected directly to the controller
@@ -250,6 +252,7 @@ void setup() {
 #if USE_PCA9685
 void setupPCA9685() {
   // Initialize PWM Servo Driver object (for PCA9685)
+  Serial.printf("Setting up PCA9685 %i",NUM_PCA9685s);
   for (int p = 0; p < NUM_PCA9685s; p++) {
     pca9685[p] = Adafruit_PWMServoDriver(0x40 + p);
     pca9685[p].begin();
@@ -262,6 +265,7 @@ void setupPCA9685() {
 
 #if USE_MCP23017
 void setupMCP23017() {
+  Serial.printf("Setting up MCP23017s %i",NUM_MCP23017s);
   for (int m = 0; m < NUM_MCP23017s; m++) {
     mcp23017[m] = Adafruit_MCP23017();
     mcp23017[m].begin(m);
@@ -271,6 +275,7 @@ void setupMCP23017() {
 
 #if USE_U8G2
 void setupU8g2() {
+  Serial.printf("Setting up U8G2");
   u8g2.begin();
 }
 #endif

@@ -116,23 +116,23 @@ struct ServoConfiguration {
 } servoConfiguration[NUM_SERVOS] =
 {
   {
-    .pin = 0,
-    .pinType = 0x40,
+    .pin = D0,
+    .pinType = 0,
     .detachAfterUsage = true
   },
   {
-    .pin = 1,
-    .pinType = 0x40,
+    .pin = D1,
+    .pinType = 0,
     .detachAfterUsage = true
   },
   {
-    .pin = 2,
-    .pinType = 0x40,
+    .pin = D2,
+    .pinType = 0,
     .detachAfterUsage = true
   },
   {
-    .pin = 3,
-    .pinType = 0x40,
+    .pin = D3,
+    .pinType = 0,
     .detachAfterUsage = true
   }
 };
@@ -161,12 +161,12 @@ struct LEDConfiguration {
 } ledConfiguration[NUM_LEDS] =
 {
   {
-    .pin = 8,
-    .pinType = 0x40
+    .pin = D4,
+    .pinType = 0
   },
   {
-    .pin = 9,
-    .pinType = 0x40
+    .pin = D5,
+    .pinType = 0
   }
 };
 

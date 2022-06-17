@@ -78,7 +78,7 @@ unsigned int mattzoControllerId;
 #define MAX_CONTROLLER_ID 65000
 
 int getMattzoControllerId() {
-  int i;
+  unsigned int i;
   int controllerNoHiByte;
   int controllerNoLowByte;
 
@@ -201,7 +201,7 @@ bool lastKnownWifiConnectedStatus = false;
 // Setup wifi parameters and initiate connection process
 void setupWifi() {
   delay(10);
-  Serial.println("Connecting as " + String(mattzoControllerName_char) + " to Wifi " + String(WIFI_SSID));
+  Serial.println("Setup " + String(mattzoControllerName_char) + " connection to Wifi " + String(WIFI_SSID));
 #if defined(ESP8266)
   WiFi.hostname(mattzoControllerName_char);
 #elif defined(ESP32)
@@ -224,7 +224,10 @@ const unsigned long WAIT_BETWEEN_WIFI_CONNECTS_MS = 500;
 // (re)connect to WiFi. Called by checkWifi().
 void reconnectWiFi() {
   if (millis() > lastWiFiBegin_ms + WAIT_BETWEEN_WIFI_CONNECTS_MS) {
+    WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    WiFi.setAutoReconnect(true);
+    WiFi.persistent(true);
     Serial.println(".");
     lastWiFiBegin_ms = millis();
   }
@@ -233,12 +236,16 @@ void reconnectWiFi() {
 // Check and monitor wifi connection status changes
 // If not connected, (re)connect!
 void checkWifi() {
-  if (WiFi.status() != WL_CONNECTED && lastKnownWifiConnectedStatus) {
+
+  if (WiFi.status() != WL_CONNECTED) {
     lastKnownWifiConnectedStatus = false;
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
     Serial.println("Connection to Wifi " + String(WIFI_SSID) + " lost.");
-  }
-  else if (WiFi.status() == WL_CONNECTED && !lastKnownWifiConnectedStatus) {
-    lastKnownWifiConnectedStatus = true;
+    while (WiFi.status() != WL_CONNECTED)
+    {
+      delay(500);
+      Serial.printf("Connection status: %d\n", WiFi.status());
+    }
     mcLog("Wifi connected. My IP address is " + WiFi.localIP().toString() + ".");
 
     // Start OTA listener
@@ -247,11 +254,26 @@ void checkWifi() {
     ArduinoOTA.begin();
   }
 
-#if defined(ESP32)
-  if (!lastKnownWifiConnectedStatus) {
-    reconnectWiFi();
-  }
-#endif
+
+//   if (WiFi.status() != WL_CONNECTED && lastKnownWifiConnectedStatus) {
+//     lastKnownWifiConnectedStatus = false;
+//     Serial.println("Connection to Wifi " + String(WIFI_SSID) + " lost.");
+//   }
+//   else if (WiFi.status() == WL_CONNECTED && !lastKnownWifiConnectedStatus) {
+//     lastKnownWifiConnectedStatus = true;
+//     mcLog("Wifi connected. My IP address is " + WiFi.localIP().toString() + ".");
+
+//     // Start OTA listener
+//     ArduinoOTA.setHostname(mattzoControllerName_char);
+//     ArduinoOTA.setPassword(OTA_PASSWORD);
+//     ArduinoOTA.begin();
+//   }
+
+// //#if defined(ESP32)
+//   if (!lastKnownWifiConnectedStatus) {
+//     reconnectWiFi();
+//   }
+// //#endif
 }
 
 
@@ -268,6 +290,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length);
 
 // Setup mqtt parameters
 void setupMQTT() {
+  mcLog("(Setting up MQTT " + String(MQTT_BROKER_IP) + "...");
   mqttClient.setServer(MQTT_BROKER_IP, MQTT_BROKER_PORT);
   mqttClient.setCallback(mqttCallback);
   mqttClient.setBufferSize(2048);
