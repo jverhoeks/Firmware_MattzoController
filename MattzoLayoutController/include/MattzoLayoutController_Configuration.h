@@ -209,12 +209,12 @@ struct SensorConfiguration {
 } sensorConfiguration[NUM_SENSORS] =
 {
   {
-    .pin = D6,
+    .pin = D4,
     .pinType = 0,
     .remoteMattzoControllerId = -1
   },
   {
-    .pin = D7,
+    .pin = D5,
     .pinType = 0,
     .remoteMattzoControllerId = -1
   }

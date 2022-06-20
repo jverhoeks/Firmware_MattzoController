@@ -69,7 +69,7 @@ void setup()
     MattzoWifiClient::Setup(networkConfig->WiFi);
 
     // Setup MQTT publisher (with a queue that can hold 1000 messages).
-    // MattzoMQTTPublisher::Setup(ROCRAIL_COMMAND_QUEUE, MQTT_OUTGOING_QUEUE_LENGTH);
+    //MattzoMQTTPublisher::Setup(ROCRAIL_COMMAND_QUEUE, MQTT_OUTGOING_QUEUE_LENGTH);
 
     // Setup MQTT subscriber (use controller name as part of the subscriber name).
     networkConfig->MQTT->SubscriberName = controllerConfig->ControllerName;
