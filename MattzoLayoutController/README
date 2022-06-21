@@ -11,9 +11,42 @@ const char* MQTT_BROKER_IP = "192.168.1.179";
 const int MQTT_BROKER_PORT = 1883;
 ```
 
-# Run
+# Setting up build env
 
 ```
-pio run -t upload
+brew install pio
+pio pkg install -p espressif8266
 ```
+
+```
+pio pkg install -e esp12e
+```
+
+Update platformio.ini and change the env to match the right esp model
+
+
+# Start building
+
+## Clean the device
+`pio run -t cleanall`
+
+
+## Build image and file system
+`pio run -t buildfs`
+
+## prepare the target device, clean 1 time
+`pio run -t erase`
+
+! Note only erase if you want to clear all. This resets the EEPROM ID which is used in RocRail. 
+When you erase you need to reconfigure rocrail to match the right id for all sensors/switches
+
+
+## Upload image 
+`pio run -t upload`
+
+This is the only command needed to update and upload the configuration
+
+# monitor serial with usb
+
+`pio device monitor -p 115200`
 
