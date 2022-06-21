@@ -28,6 +28,8 @@ const char* WIFI_SSID = "sbptrain";
 const char* WIFI_PASSWORD = "Tra1nSBP!";
 
 
+
+
 // *************
 // MQTT settings
 // *************
@@ -35,6 +37,9 @@ const char* WIFI_PASSWORD = "Tra1nSBP!";
 // The IP address of the host on which your MQTT broker (e.g. mosquitto) is running.
 // The MQTT_BROKER_IP parameter will also accept hostnames (e.g. "mattzohub").
 const char* MQTT_BROKER_IP = "192.168.0.10";
+
+
+
 const int MQTT_BROKER_PORT = 1883;
 
 // MQTT keep alive interval (in seconds)
@@ -75,7 +80,7 @@ const bool SYSLOG_ENABLED = true;
 // IP or hostname of the syslog server
 const char* SYSLOG_SERVER = MQTT_BROKER_IP;
 // Port of the syslog server
-const int SYSLOG_PORT = 10514;
+const int SYSLOG_PORT = 514;
 
 
 // ************
